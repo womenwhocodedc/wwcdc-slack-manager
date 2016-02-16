@@ -9,7 +9,7 @@ router.get('/', function(req, res, next) {
 });
 
 /* POST for new invite request */
-router.route('/new')
+router.route('/invite-request')
   .post(function(req, res){
     var invite = new InviteRequest(req.body);
     invite.save(function (err, result){
