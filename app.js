@@ -7,11 +7,12 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var models = require('./models');
 var routes = require('./routes/index');
+var config = require('./config');
 
 var app = express();
 
 // connect to mongodb database
-mongoose.connect(process.env.MONGODB_URL);
+mongoose.connect(config.mongoUrl);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -26,7 +27,6 @@ app.use(cookieParser());
 app.use(require('node-sass-middleware')({
   src: path.join(__dirname, 'public'),
   dest: path.join(__dirname, 'public'),
-  indentedSyntax: true,
   sourceMap: true
 }));
 app.use(express.static(path.join(__dirname, 'public')));
