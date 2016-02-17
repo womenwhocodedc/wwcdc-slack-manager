@@ -22,11 +22,11 @@ module.exports = function(passport) {
       if (username === config.userName) {
         if (password === config.userPass) {
           // complete authentication when username and user password match config values
-          done(null, username);
+          return done(null, username);
         }
-        done(null, false, req.flash('error', 'Invalid password'));
+        return done(null, false, req.flash('error', 'Invalid password'));
       }
-      done(null, false, req.flash('error', 'User not found.'));
+      return done(null, false, req.flash('error', 'User not found.'));
     }
   ));
 };
