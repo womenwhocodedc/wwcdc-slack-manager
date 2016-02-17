@@ -1,5 +1,5 @@
 <div class="col-md-offset-4 col-md-4">
-  <form class="form-auth" action="/login" method="POST">
+  <form class="form-auth" action="/auth/login" method="POST">
     <h2>Log In</h2>
     <% while (message = flash.shift()) { %>
       <% if (message.type === "error") { %>

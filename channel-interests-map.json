@@ -1,0 +1,50 @@
+[
+  {
+    "channelIds" : ["C02PJVA0Z"],
+    "interests" : ["javascript","design"]
+  },
+  {
+    "channelIds" : ["C051JT5B1"],
+    "interests" : ["algorithms"]
+  },
+  {
+    "channelIds" : ["C0723BURX","C02QGH44S"],
+    "interests" : ["android","java"]
+  },
+  {
+    "channelIds" : ["C0561CHHW"],
+    "interests" : ["c#/.net"]
+  },
+  {
+    "channelIds" : ["C094JH3GW", "C02QGH0VA"],
+    "interests" : ["data science","python"]
+  },
+  {
+    "channelIds" : ["C0B6XFF38"],
+    "interests" : ["devops"]
+  },
+  {
+    "channelIds" : ["C03CDDXRY", "C0H57Q2A1"],
+    "interests" : ["github"]
+  },
+  {
+  "channelIds" : ["C03KX0DN0"],
+  "interests" : ["hardware"]
+  },
+  {
+    "channelIds" : ["C06EF37Q9"],
+    "interests" : ["ios"]
+  },
+  {
+    "channelIds" : ["C03N7SJFS"],
+    "interests" : ["mentorship"]
+  },
+  {
+    "channelIds" : ["C02VC41DS"],
+    "interests" : ["ruby on rails"]
+  },
+  {
+    "channelIds" : ["C03PHDQR2"],
+    "interests" : ["unix"]
+  }
+]

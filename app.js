@@ -12,7 +12,8 @@ var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 var models = require('./models');
 var config = require('./config');
-var index = require('./routes/index')(passport);
+var auth = require('./routes/auth')(passport);
+var index = require('./routes/index');
 var initPassport = require('./passport-init');
 
 var app = express();
@@ -58,16 +59,17 @@ app.use(function (req, res, next) {
   // request and response objects
 
   //allow only authenticated or /login
-  if (req.path === "/login" || req.isAuthenticated()) {
+  if (req.path === "/auth/login" || req.isAuthenticated()) {
     return next();
   }
 
   // if the user is not authenticated then redirect him to the login page
-  res.redirect('/login');
+  res.redirect('/auth/login');
 });
 
 // register routes
 app.use('/', index);
+app.use('/auth', auth);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
