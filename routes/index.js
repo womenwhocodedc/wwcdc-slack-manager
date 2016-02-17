@@ -1,5 +1,6 @@
 var express = require('express');
 var mongoose = require('mongoose');
+var fs = require('fs');
 var request = require('request');
 var router = express.Router();
 var config = require('../config');
@@ -24,11 +25,23 @@ router.route('/approve')
           return renderError(err, req, res);
         }
 
+
+        var interestsLookup = JSON.parse(fs.readFileSync('./channel-interests-map.json', 'utf8'));
+        var defaultChannelIds = ["C02PL1A6N","C02QFALPV"]; // _general and _jobs
+        var channelsSet = new Set(defaultChannelIds);
+        for (var i = 0; i < inviteReq.interests.length; i++){
+          // clean the format of the interest by removing spaces and making it lowercase
+          var interest = inviteReq.interests[i].toLowerCase().replace(/\s+/g, '');
+          var channels = interestsLookup[interest];
+          for (var j = 0 ; j < channels.length; j++){
+            channelsSet.add(channels[j]);
+          }
+        }
         // POST to slack API to invite user
         request.post({
           url: 'https://' + config.slackUrl + '/api/users.admin.invite',
           form: {
-            /* TODO: implement auto join channels */
+            channels: Array.from(channelsSet).toString(),
             first_name: inviteReq.firstName,
             last_name: inviteReq.lastName,
             email: inviteReq.email,

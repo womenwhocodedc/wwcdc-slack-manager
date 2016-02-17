@@ -1,50 +1,52 @@
-[
-  {
-    "channelIds" : ["C02PJVA0Z"],
-    "interests" : ["javascript","design"]
-  },
-  {
-    "channelIds" : ["C051JT5B1"],
-    "interests" : ["algorithms"]
-  },
-  {
-    "channelIds" : ["C0723BURX","C02QGH44S"],
-    "interests" : ["android","java"]
-  },
-  {
-    "channelIds" : ["C0561CHHW"],
-    "interests" : ["c#/.net"]
-  },
-  {
-    "channelIds" : ["C094JH3GW", "C02QGH0VA"],
-    "interests" : ["data science","python"]
-  },
-  {
-    "channelIds" : ["C0B6XFF38"],
-    "interests" : ["devops"]
-  },
-  {
-    "channelIds" : ["C03CDDXRY", "C0H57Q2A1"],
-    "interests" : ["github"]
-  },
-  {
-  "channelIds" : ["C03KX0DN0"],
-  "interests" : ["hardware"]
-  },
-  {
-    "channelIds" : ["C06EF37Q9"],
-    "interests" : ["ios"]
-  },
-  {
-    "channelIds" : ["C03N7SJFS"],
-    "interests" : ["mentorship"]
-  },
-  {
-    "channelIds" : ["C02VC41DS"],
-    "interests" : ["ruby on rails"]
-  },
-  {
-    "channelIds" : ["C03PHDQR2"],
-    "interests" : ["unix"]
-  }
-]
+{
+  "javascript": [
+    "C02PJVA0Z"
+  ],
+  "design": [
+    "C02PJVA0Z"
+  ],
+  "algorithms": [
+    "C051JT5B1"
+  ],
+  "java": [
+    "C0723BURX",
+    "C02QGH44S"
+  ],
+  "android": [
+    "C0723BURX",
+    "C02QGH44S"
+  ],
+  "c#/.net": [
+    "C0561CHHW"
+  ],
+  "python": [
+    "C094JH3GW",
+    "C02QGH0VA"
+  ],
+  "datascience": [
+    "C094JH3GW",
+    "C02QGH0VA"
+  ],
+  "devops": [
+    "C0B6XFF38"
+  ],
+  "github": [
+    "C03CDDXRY",
+    "C0H57Q2A1"
+  ],
+  "hardware": [
+    "C03KX0DN0"
+  ],
+  "ios": [
+    "C06EF37Q9"
+  ],
+  "mentorship": [
+    "C03N7SJFS"
+  ],
+  "rubyonrails": [
+    "C02VC41DS"
+  ],
+  "unix": [
+    "C03PHDQR2"
+  ]
+}
