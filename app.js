@@ -1,13 +1,19 @@
 var express = require('express');
+var partials = require('express-partials');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var passport = require('passport');
+var flash = require('flash');
+var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
 var models = require('./models');
-var routes = require('./routes/index');
 var config = require('./config');
+var index = require('./routes/index')(passport);
+var initPassport = require('./passport-init');
 
 var app = express();
 
@@ -30,8 +36,38 @@ app.use(require('node-sass-middleware')({
   sourceMap: true
 }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(partials());
 
-app.use('/', routes);
+//// Initialize Passport/Session
+app.use(session({
+  secret: "wwcdc",
+  saveUninitialized: true,
+  resave: true,
+  store: new MongoStore({
+    mongooseConnection: mongoose.connection
+  })
+}));
+app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
+initPassport(passport);
+
+app.use(function (req, res, next) {
+  // if user is authenticated in the session, call the next() to call the next request handler
+  // Passport adds this method to request object. A middleware is allowed to add properties to
+  // request and response objects
+
+  //allow only authenticated or /login
+  if (req.path === "/login" || req.isAuthenticated()) {
+    return next();
+  }
+
+  // if the user is not authenticated then redirect him to the login page
+  res.redirect('/login');
+});
+
+// register routes
+app.use('/', index);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
