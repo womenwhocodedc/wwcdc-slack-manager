@@ -8,7 +8,7 @@ var InviteRequest = mongoose.model('InviteRequest');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  InviteRequest.find()
+  InviteRequest.find().sort("-created_at")
     .exec(function (err, results) {
       if (err)
         return res.send(500, err);
@@ -25,23 +25,12 @@ router.route('/approve')
           return renderError(err, req, res);
         }
 
-
-        var interestsLookup = JSON.parse(fs.readFileSync('../channel-interests-map.json', 'utf8'));
-        var defaultChannelIds = ["C02PL1A6N","C02QFALPV"]; // _general and _jobs
-        var channelsSet = new Set(defaultChannelIds);
-        for (var i = 0; i < inviteReq.interests.length; i++){
-          // clean the format of the interest by removing spaces and making it lowercase
-          var interest = inviteReq.interests[i].toLowerCase().replace(/\s+/g, '');
-          var channels = interestsLookup[interest];
-          for (var j = 0 ; j < channels.length; j++){
-            channelsSet.add(channels[j]);
-          }
-        }
+        var channels = mapChannels(inviteReq.interests);
         // POST to slack API to invite user
         request.post({
           url: 'https://' + config.slackUrl + '/api/users.admin.invite',
           form: {
-            channels: Array.from(channelsSet).toString(),
+            channels: Array.from(channels).toString(),
             first_name: inviteReq.firstName,
             last_name: inviteReq.lastName,
             email: inviteReq.email,
@@ -95,4 +84,20 @@ function renderError(err, req, res){
   req.flash('error', err);
   return res.redirect('/');
 }
+
+function mapChannels(interests){
+  var interestsLookup = JSON.parse(fs.readFileSync('../channel-interests-map.json', 'utf8'));
+  var defaultChannelIds = ["C02PL1A6N","C02QFALPV"]; // _general and _jobs
+  var channelsSet = new Set(defaultChannelIds);
+  for (var i = 0; i < interests.length; i++){
+    // clean the format of the interest by removing spaces and making it lowercase
+    var interest = interests[i].toLowerCase().replace(/\s+/g, '');
+    var channels = interestsLookup[interest];
+    for (var j = 0 ; j < channels.length; j++){
+      channelsSet.add(channels[j]);
+    }
+  }
+  return channelsSet;
+}
+
 module.exports = router;
