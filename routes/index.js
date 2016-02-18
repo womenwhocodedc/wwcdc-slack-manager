@@ -26,7 +26,7 @@ router.route('/approve')
         }
 
 
-        var interestsLookup = JSON.parse(fs.readFileSync('./channel-interests-map.json', 'utf8'));
+        var interestsLookup = JSON.parse(fs.readFileSync('../channel-interests-map.json', 'utf8'));
         var defaultChannelIds = ["C02PL1A6N","C02QFALPV"]; // _general and _jobs
         var channelsSet = new Set(defaultChannelIds);
         for (var i = 0; i < inviteReq.interests.length; i++){
@@ -62,7 +62,7 @@ router.route('/approve')
 
               // redirect to home page and show success message
               req.flash('message', 'Approved "' + inviteReq.email + '"');
-              res.redirect('/');
+              return res.redirect('/');
             });
           } else {
             var error = body.error;
