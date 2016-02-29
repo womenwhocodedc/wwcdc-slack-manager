@@ -69,7 +69,7 @@ router.route('/invite-request')
     var invite = new InviteRequest(req.body);
     invite.save(function (err, result) {
       if (err) {
-        postToSlack(err, ":fearful:");
+        postToSlack(err, ":fearful:", "Slack Invites App - Error");
         return res.send(500, err);
       }
       postToSlack(invite.email + " has requested to join slack.\nPlease visit https://wwcdc-slack-invites.azurewebsites.net/ to approve this request.");
@@ -78,7 +78,7 @@ router.route('/invite-request')
   });
 
 function renderError(err, req, res){
-  postToSlack(err, ":fearful:");
+  postToSlack(err, ":fearful:", "Slack Invites App - Error");
   req.flash('error', err);
   return res.redirect('/');
 }
@@ -98,14 +98,15 @@ function mapChannels(interests){
   return channelsSet;
 }
 
-function postToSlack(message, emoji, channel){
+function postToSlack(message, emoji, name, channel){
+  var userName = name || 'Slack Invites App';
   var slackChannel = channel || "G061QPLE5";
   var icon = emoji || ":rabbit:";
   request.post({
     url: 'https://' + config.slackUrl + '/api/chat.postMessage',
     form: {
       channel: slackChannel,
-      username: 'Slack Invites App',
+      username: userName,
       icon_emoji: icon,
       text: message,
       token: config.slackToken
