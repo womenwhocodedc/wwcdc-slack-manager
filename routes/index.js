@@ -56,15 +56,7 @@ router.route('/approve')
               return res.redirect('/');
             });
           } else {
-            var error = body.error;
-            if (error === 'already_invited' || error === 'already_in_team') {
-              error = 'Slack Error: ' + error;
-            } else if (error === 'invalid_email') {
-              error = 'The email you entered is an invalid email.'
-            } else if (error === 'invalid_auth') {
-              error = 'Something has gone wrong. Please contact a system administrator.'
-            }
-
+            var error = 'Slack Error: "' + inviteReq.email + '" - ' + body.error;
             return renderError(error, req, res);
           }
         });
@@ -80,7 +72,7 @@ router.route('/invite-request')
         postToSlack(err, ":fearful:");
         return res.send(500, err);
       }
-      postToSlack(invite.email + " has requested to join slack.");
+      postToSlack(invite.email + " has requested to join slack.\nPlease visit https://wwcdc-slack-invites.azurewebsites.net/ to approve this request.");
       return res.json(result);
     });
   });
