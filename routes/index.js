@@ -25,12 +25,13 @@ router.route('/approve')
           return renderError(err, req, res);
         }
 
-        var channels = mapChannels(inviteReq.interests);
+        var channelsMap = mapChannels(inviteReq.interests);
+        var channels = Array.from(channelsMap).toString();
         // POST to slack API to invite user
         request.post({
           url: 'https://' + config.slackUrl + '/api/users.admin.invite',
           form: {
-            channels: Array.from(channels).toString(),
+            channels: channels,
             first_name: inviteReq.firstName,
             last_name: inviteReq.lastName,
             email: inviteReq.email,
@@ -49,6 +50,7 @@ router.route('/approve')
                 return renderError(saveErr, req, res);
               }
 
+              postToSlack(inviteReq.email + " has been approved to join slack.");
               // redirect to home page and show success message
               req.flash('message', 'Approved "' + inviteReq.email + '"');
               return res.redirect('/');
@@ -74,13 +76,17 @@ router.route('/invite-request')
   .post(function (req, res) {
     var invite = new InviteRequest(req.body);
     invite.save(function (err, result) {
-      if (err)
+      if (err) {
+        postToSlack(err, ":fearful:");
         return res.send(500, err);
+      }
+      postToSlack(invite.email + " has requested to join slack.");
       return res.json(result);
     });
   });
 
 function renderError(err, req, res){
+  postToSlack(err, ":fearful:");
   req.flash('error', err);
   return res.redirect('/');
 }
@@ -98,6 +104,21 @@ function mapChannels(interests){
     }
   }
   return channelsSet;
+}
+
+function postToSlack(message, emoji, channel){
+  var slackChannel = channel || "G061QPLE5";
+  var icon = emoji || ":rabbit:";
+  request.post({
+    url: 'https://' + config.slackUrl + '/api/chat.postMessage',
+    form: {
+      channel: slackChannel,
+      username: 'Slack Invites App',
+      icon_emoji: icon,
+      text: message,
+      token: config.slackToken
+    }
+  });
 }
 
 module.exports = router;
