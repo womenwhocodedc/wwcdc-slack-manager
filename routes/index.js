@@ -56,6 +56,13 @@ router.route('/approve')
               return res.redirect('/');
             });
           } else {
+            inviteReq.status = body.error;
+            inviteReq.save(function (saveErr, saved) {
+              if (saveErr) {
+                return renderError(saveErr, req, res);
+              }
+            });
+
             var error = 'Slack Error: "' + inviteReq.email + '" - ' + body.error;
             return renderError(error, req, res);
           }
