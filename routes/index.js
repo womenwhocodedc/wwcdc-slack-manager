@@ -63,7 +63,7 @@ function approveInviteId(id, req, res, errorCallback, successCallback){
   InviteRequest.findOne({_id: id})
     .exec(function (err, inviteReq) {
       if (err) {
-        return errorCallback(err, req, res);
+        return errorCallback(err.message, req, res);
       }
       if (!inviteReq){
         var err = "error retrieving invite request for id="+id;
