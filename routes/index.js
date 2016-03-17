@@ -31,7 +31,10 @@ router.route('/approve')
 router.route('/approve-command')
   .post(function (req, res) {
     if (req.body.token === config.botToken && req.body.channel_id === config.allowedBotChannel) {
-      return approveInviteId(req.body.text, req, res, renderErrorJson, function (inviteReq) {
+      return approveInviteId(req.body.text, req, res, function(err, req, res){
+        postToSlack(err, ":fearful:", "Slack Invites App - Error");
+        return res.send(200);
+      }, function (inviteReq) {
         postToSlack(inviteReq.email + " has been approved to join slack.");
         return res.send(200);
       })
@@ -105,11 +108,6 @@ function approveInviteId(id, req, res, errorCallback, successCallback){
         }
       });
     });
-}
-
-function renderErrorJson(err, req, res){
-  postToSlack(err, ":fearful:", "Slack Invites App - Error");
-  return res.send(500, err);
 }
 
 function renderError(err, req, res){
