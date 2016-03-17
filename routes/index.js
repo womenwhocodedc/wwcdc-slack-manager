@@ -66,7 +66,8 @@ function approveInviteId(id, req, res, errorCallback, successCallback){
         return errorCallback(err, req, res);
       }
       if (!inviteReq){
-        return errorCallback("error retrieving invite request for id="+id, req, res);
+        var err = "error retrieving invite request for id="+id;
+        return errorCallback(err, req, res);
       }
 
       var channelsMap = mapChannels(inviteReq.interests);
