@@ -16,58 +16,28 @@ router.get('/', function (req, res, next) {
     });
 });
 
-/* POST to approve invite request */
+/* POST to approve invite request from site */
 router.route('/approve')
   .post(function (req, res) {
-    InviteRequest.findOne({_id: req.body.id})
-      .exec(function (err, inviteReq) {
-        if (err) {
-          return renderError(err, req, res);
-        }
+    return approveInviteId(req.body.id, req, res, renderError, function(inviteReq){
+      postToSlack(inviteReq.email + " has been approved to join slack.");
+      // redirect to home page and show success message
+      req.flash('message', 'Approved "' + inviteReq.email + '"');
+      return res.redirect('/');
+    })
+  });
 
-        var channelsMap = mapChannels(inviteReq.interests);
-        var channels = Array.from(channelsMap).toString();
-        // POST to slack API to invite user
-        request.post({
-          url: 'https://' + config.slackUrl + '/api/users.admin.invite',
-          form: {
-            channels: channels,
-            first_name: inviteReq.firstName,
-            last_name: inviteReq.lastName,
-            email: inviteReq.email,
-            token: config.slackToken,
-            set_active: true
-          }
-        }, function (err, httpResponse, body) {
-          if (err) {
-            return renderError(err, req, res);
-          }
-          body = JSON.parse(body);
-          if (body.ok) {
-            inviteReq.status = "approved";
-            inviteReq.save(function (saveErr, saved) {
-              if (saveErr) {
-                return renderError(saveErr, req, res);
-              }
-
-              postToSlack(inviteReq.email + " has been approved to join slack.");
-              // redirect to home page and show success message
-              req.flash('message', 'Approved "' + inviteReq.email + '"');
-              return res.redirect('/');
-            });
-          } else {
-            inviteReq.status = body.error;
-            inviteReq.save(function (saveErr, saved) {
-              if (saveErr) {
-                return renderError(saveErr, req, res);
-              }
-            });
-
-            var error = 'Slack Error: "' + inviteReq.email + '" - ' + body.error;
-            return renderError(error, req, res);
-          }
-        });
-      });
+/* POST to approve invite request from slack command */
+router.route('/approve-command')
+  .post(function (req, res) {
+    if (req.body.token === config.botToken && req.body.channel_id === config.allowedBotChannel) {
+      return approveInviteId(req.body.text, req, res, renderErrorJson, function (inviteReq) {
+        postToSlack(inviteReq.email + " has been approved to join slack.");
+        return res.send(200);
+      })
+    } else {
+      return renderErrorJson("wrong slack bot token or requesting channel", req, res);
+    }
   });
 
 /* POST for new invite request */
@@ -79,10 +49,68 @@ router.route('/invite-request')
         postToSlack(err, ":fearful:", "Slack Invites App - Error");
         return res.send(500, err);
       }
-      postToSlack(invite.email + " has requested to join slack.\nPlease visit https://wwcdc-slack-invites.azurewebsites.net/ to approve this request.");
+      postToSlack(invite.email + " has requested to join slack."
+      +"\nPlease visit https://wwcdc-slack-invites.azurewebsites.net/ to approve this request."
+      +"\nOr use the slash command `/approve "+result.id+"` from slack to approve directly.");
       return res.json(result);
     });
   });
+
+function approveInviteId(id, req, res, errorCallback, successCallback){
+  InviteRequest.findOne({_id: id})
+    .exec(function (err, inviteReq) {
+      if (err) {
+        return errorCallback(err, req, res);
+      }
+      if (!inviteReq){
+        return errorCallback("error retrieving invite request for id="+id, req, res);
+      }
+
+      var channelsMap = mapChannels(inviteReq.interests);
+      var channels = Array.from(channelsMap).toString();
+      // POST to slack API to invite user
+      request.post({
+        url: 'https://' + config.slackUrl + '/api/users.admin.invite',
+        form: {
+          channels: channels,
+          first_name: inviteReq.firstName,
+          last_name: inviteReq.lastName,
+          email: inviteReq.email,
+          token: config.slackToken,
+          set_active: true
+        }
+      }, function (err, httpResponse, body) {
+        if (err) {
+          return errorCallback(err, req, res);
+        }
+        body = JSON.parse(body);
+        if (body.ok) {
+          inviteReq.status = "approved";
+          inviteReq.save(function (saveErr, saved) {
+            if (saveErr) {
+              return errorCallback(saveErr, req, res);
+            }
+            return successCallback(inviteReq);
+          });
+        } else {
+          inviteReq.status = body.error;
+          inviteReq.save(function (saveErr, saved) {
+            if (saveErr) {
+              return errorCallback(saveErr, req, res);
+            }
+          });
+
+          var error = 'Slack Error: "' + inviteReq.email + '" - ' + body.error;
+          return errorCallback(error, req, res);
+        }
+      });
+    });
+}
+
+function renderErrorJson(err, req, res){
+  postToSlack(err, ":fearful:", "Slack Invites App - Error");
+  return res.send(500, err);
+}
 
 function renderError(err, req, res){
   postToSlack(err, ":fearful:", "Slack Invites App - Error");
