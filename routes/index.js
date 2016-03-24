@@ -52,9 +52,9 @@ router.route('/invite-request')
         postToSlack(err, ":fearful:", "Slack Invites App - Error");
         return res.send(500, err);
       }
-      postToSlack(invite.email + " has requested to join slack."
+      postToSlack(invite.firstName + " " + invite.lastName + " <" + invite.email + "> has requested to join slack."
       +"\nPlease visit https://wwcdc-slack-invites.azurewebsites.net/ to approve this request."
-      +"\nOr use the slash command `/approve "+result.id+"` from slack to approve directly.");
+      +"\nOr use the following slash command from slack to approve directly: ```/approve "+result.id+"```");
       return res.json(result);
     });
   });
