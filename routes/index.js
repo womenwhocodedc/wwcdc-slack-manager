@@ -53,8 +53,7 @@ router.route('/invite-request')
         return res.send(500, err);
       }
       postToSlack(invite.firstName + " " + invite.lastName + " <" + invite.email + "> has requested to join slack."
-      +"\nPlease visit https://wwcdc-slack-invites.azurewebsites.net/ to approve this request."
-      +"\nOr use the following slash command from slack to approve directly: ```/approve "+result.id+"```");
+      +"\nUse the following slash command from slack to approve directly: ```/approve "+result.id+"```");
       return res.json(result);
     });
   });
@@ -119,7 +118,8 @@ function renderError(err, req, res){
 
 function mapChannels(interests){
   var interestsLookup = JSON.parse(fs.readFileSync('../channel-interests-map.json', 'utf8'));
-  var defaultChannelIds = ["C02PL1A6N","C02QFALPV"]; // _general and _jobs
+  var defaultJoinChannels = config.defaultJoinChannels;
+  var defaultChannelIds = defaultJoinChannels.split(',');
   var channelsSet = new Set(defaultChannelIds);
   for (var i = 0; i < interests.length; i++){
     // clean the format of the interest by removing spaces and making it lowercase
@@ -134,7 +134,7 @@ function mapChannels(interests){
 
 function postToSlack(message, emoji, name, channel){
   var userName = name || 'Slack Invites App';
-  var slackChannel = channel || "G061QPLE5";
+  var slackChannel = channel || config.defaultPostChannel;
   var icon = emoji || ":rabbit:";
   request.post({
     url: 'https://' + config.slackUrl + '/api/chat.postMessage',
