@@ -16,6 +16,17 @@ router.get('/', function (req, res, next) {
     });
 });
 
+/* POST to report something from slack */
+router.route('/report-command')
+  .post(function(req, res) {
+    if (req.body.token === config.reportsToken){
+      var message = "*channel:* " + req.body.channel_name 
+        + "; *message:* " + req.body.text;
+      postToSlack(message, ":exclamation:", "Report", reportsChannel);
+      return res.send(200);
+    }
+  });
+
 /* POST to approve invite request from site */
 router.route('/approve')
   .post(function (req, res) {
