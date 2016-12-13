@@ -22,7 +22,7 @@ router.route('/report-command')
     if (req.body.token === config.reportsToken){
       var message = "*channel:* " + req.body.channel_name 
         + "; *message:* " + req.body.text;
-      postToSlack(message, ":exclamation:", "Report", reportsChannel);
+      postToSlack(message, ":exclamation:", "Report", config.reportsChannel);
       return res.send(200);
     }
   });

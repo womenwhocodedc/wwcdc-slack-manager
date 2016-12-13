@@ -59,7 +59,8 @@ app.use(function (req, res, next) {
   // request and response objects
 
   //allow only authenticated or /auth/login or /invite-request
-  if (req.path === "/auth/login" || req.path === "/invite-request" || req.path === "/approve-command" ||  req.isAuthenticated()) {
+  if (req.path === "/auth/login" || req.path === "/invite-request" || 
+    req.path === "/approve-command" || req.path === "/report-command" ||  req.isAuthenticated()) {
     return next();
   }
 
