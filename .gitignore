@@ -29,3 +29,12 @@ obj/
 _ReSharper*/
 [Tt]est[Rr]esult*
 npm*.log
+
+# Visual Studio Code Files
+.vscode/*
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+

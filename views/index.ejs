@@ -31,7 +31,7 @@
       <td><%= requests[i].status %></td>
       <td>
         <% if (requests[i].status === "pending") { %>
-        <form action="/approve" method="post">
+        <form action="/invite/approve" method="post">
           <input type="hidden" name="id" value="<%= requests[i].id %>"/>
           <button class="btn btn-success" type="submit">Approve</button>
         </form>
