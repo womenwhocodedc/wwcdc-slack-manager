@@ -5,7 +5,7 @@
  */
 
 var app = require('../app');
-var debug = require('debug')('slack-invite-manager:server');
+var debug = require('debug')('slack-manager:server');
 var http = require('http');
 
 /**
