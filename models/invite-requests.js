@@ -6,6 +6,7 @@ var inviteRequestSchema = new mongoose.Schema({
   lastName: String,
   email: { type: String, required: true },
   interests: [String],
+  verification: String,
   created_at: { type: Date, default: Date.now },
   status: { type: String, default: "pending" }
 });

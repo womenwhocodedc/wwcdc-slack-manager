@@ -16,6 +16,7 @@ router.route('/request')
         return res.send(500, err);
       }
       slackService.postToSlack(invite.firstName + " " + invite.lastName + " <" + invite.email + "> has requested to join slack."
+        + "```" + invite.verification + "```"
         + "\nUse the following slash command from slack to approve directly: ```/approve " + result.id + "```");
       return res.json(result);
     });
