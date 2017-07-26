@@ -60,8 +60,7 @@ app.use(function (req, res, next) {
   // Passport adds this method to request object. A middleware is allowed to add properties to
   // request and response objects
 
-  //allow only authenticated or /auth/login or /invite-request
-  if (req.path === "/auth/login" || req.path === "/invite/request" || 
+  if (req.path === "/upcoming-events" || req.path === "/auth/login" || req.path === "/invite/request" || 
     req.path === "/invite/approve-command" || req.path === "/report" ||  
     req.isAuthenticated()) {
     return next();

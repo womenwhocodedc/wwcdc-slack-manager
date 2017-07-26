@@ -14,4 +14,8 @@ router.get('/', function (req, res, next) {
     });
 });
 
+router.get('/upcoming-events', function (req, res, next) {
+  res.render('upcoming-events');
+});
+
 module.exports = router;
