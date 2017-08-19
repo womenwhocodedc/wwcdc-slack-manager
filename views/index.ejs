@@ -17,6 +17,7 @@
     <th>Last Name</th>
     <th>Email</th>
     <th>Interests</th>
+    <th>Verification</th>
     <th>Status</th>
     <th>Actions</th>
     </thead>
@@ -28,6 +29,7 @@
       <td><%= requests[i].lastName %></td>
       <td><%= requests[i].email %></td>
       <td><%= requests[i].interests.join(", ") %></td>
+      <td><%= requests[i].verification %></td>
       <td><%= requests[i].status %></td>
       <td>
         <% if (requests[i].status === "pending") { %>
